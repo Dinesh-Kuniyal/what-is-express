@@ -1,5 +1,5 @@
 export class Route {
-  constructor(path, handlers, options = {}) {
+  constructor(path, handlers = new Map(), options = {}) {
     this.handlers = handlers;
     this.children = [];
     this.options = options;

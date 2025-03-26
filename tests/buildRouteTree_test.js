@@ -3,11 +3,10 @@ import buildRouteTree from '../src/lib/buildRouteTree.js';
 import { assertThrows, assertEquals, assertFalse } from 'jsr:@std/assert';
 
 Deno.test("buildRouteTree should correctly build a route tree", () => {
-  const home = () => console.log("home function");
   const fn1 = () => console.log("First function");
   const fn2 = () => console.log("Second function");
 
-  const baseRoute = new Route("/", [home]);
+  const baseRoute = new Route("/");
   const url = "/api/something";
 
   const updatedRoute = buildRouteTree(baseRoute, url.split("/").filter(Boolean), [fn1, fn2]);
@@ -19,13 +18,11 @@ Deno.test("buildRouteTree should correctly build a route tree", () => {
     throw new Error("Route tree was not built correctly");
   }
 
-  assertFalse(somethingRoute.handlers.length !== 2);
+  assertFalse(somethingRoute.handlers.get('GET').length !== 2);
 });
 
 Deno.test("buildRouteTree should handle empty URL segments", () => {
-  const home = () => console.log("home function");
-
-  const baseRoute = new Route("/", [home]);
+  const baseRoute = new Route("/");
   const url = "/";
 
   const updatedRoute = buildRouteTree(baseRoute, url.split("/").filter(Boolean), []);
@@ -35,10 +32,10 @@ Deno.test("buildRouteTree should handle empty URL segments", () => {
 Deno.test("buildRouteTree should handle deeply nested routes", () => {
   const fn1 = () => console.log("First function");
 
-  const baseRoute = new Route("/", []);
+  const baseRoute = new Route("/");
   const url = "/api/v1/resource/item";
 
-  const updatedRoute = buildRouteTree(baseRoute, url.split("/").filter(Boolean), [fn1]);
+  const updatedRoute = buildRouteTree(baseRoute, url.split("/").filter(Boolean), [fn1], 'POST');
 
   const apiRoute = updatedRoute.findChild("api");
   const v1Route = apiRoute.findChild("v1");
@@ -49,7 +46,7 @@ Deno.test("buildRouteTree should handle deeply nested routes", () => {
     throw new Error("Deeply nested route tree was not built correctly");
   }
 
-  assertFalse(itemRoute.handlers.length !== 1);
+  assertFalse(itemRoute.handlers.get('POST').length !== 1);
 });
 
 Deno.test("buildRouteTree should handle duplicate routes", () => {
@@ -60,7 +57,7 @@ Deno.test("buildRouteTree should handle duplicate routes", () => {
   const url = "/api/resource";
 
   buildRouteTree(baseRoute, url.split("/").filter(Boolean), [fn1]);
-  const updatedRoute = buildRouteTree(baseRoute, url.split("/").filter(Boolean), [fn2]);
+  const updatedRoute = buildRouteTree(baseRoute, url.split("/").filter(Boolean), [fn2], 'UPDATE');
 
   const apiRoute = updatedRoute.findChild("api");
   const resourceRoute = apiRoute.findChild("resource");
@@ -69,7 +66,7 @@ Deno.test("buildRouteTree should handle duplicate routes", () => {
     throw new Error("Duplicate routes were not handled correctly");
   }
 
-  assertEquals(resourceRoute.handlers.length, 1);
+  assertEquals(resourceRoute.handlers.get('UPDATE').length, 1);
 });
 
 Deno.test("buildRouteTree should handle invalid input gracefully", () => {
