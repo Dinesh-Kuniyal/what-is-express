@@ -21,7 +21,22 @@ export class Route {
     return child;
   }
 
-  route() {
-    // will process handlers
+  process(request, method) {    
+    const middlewaresAndControllers = this.handlers.get(method);
+    console.log(middlewaresAndControllers);
+
+    let index = 0;
+
+    const next = () => {
+      const currentHandler = middlewaresAndControllers[index];
+      if (index === middlewaresAndControllers.length - 1) {
+        return currentHandler(request);
+      }
+
+      index++;
+      return currentHandler(request, next);
+    };
+
+    return next();
   }
 }

@@ -1,5 +1,6 @@
 import { Route } from "./Route.js";
 import buildRouteTree from "./lib/buildRouteTree.js";
+import findRoute from "./lib/findRoute.js";
 
 class ZepressServer {
   constructor(port = 5050) {
@@ -10,26 +11,13 @@ class ZepressServer {
   routesHandler(request) {
     const { method, url } = request;
     const { pathname } = new URL(url);
+    const segments = pathname.split('/').filter(Boolean);
+    const matchedRoute = findRoute(this.routeTree, segments, method);
 
-    const controllersList = this.routeTree.get(pathname);
-    if (!controllersList || !(method in controllersList)) {
+    if (!matchedRoute)
       return new Response('Route not found', { status: 404 });
-    }
 
-    const middlewaresAndControllers = controllersList[method];
-    let index = 0;
-
-    const next = () => {
-      const currentHandler = middlewaresAndControllers[index];
-      if (index === middlewaresAndControllers.length - 1) {
-        return currentHandler(request);
-      }
-
-      index++;
-      return currentHandler(request, next);
-    };
-
-    return next();
+    return matchedRoute.process(request, method);
   }
 
   registerRequest(method, path, ...controllers) {
