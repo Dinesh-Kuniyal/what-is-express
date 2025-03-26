@@ -18,9 +18,7 @@ class ZepressServer {
     if (!matchedRoute)
       return new Response('Route not found', { status: 404 });
 
-    console.log(matchedRoute);
-
-    return matchedRoute.process(request, method);
+    return matchedRoute.process(request, method, matchedRoute);
   }
 
   registerRequest(method, path, ...controllers) {

@@ -6,7 +6,9 @@ const homeController = () => new Response('Hello from home route');
 
 const aboutGetController = () => new Response('Hello from about get route');
 
-const aboutTestPostController = () => new Response('Hello from about test post controller');
+const aboutTestPostController = () => {
+  return new Response('Hello from about test post controller');
+};
 
 const aboutMiddleware = (_, next) => {
   console.log('Hello from middleware');
@@ -22,10 +24,7 @@ const aboutSecondMiddleware = (_, next) => {
 
 app.get('/', homeController);
 app.get('/about', aboutMiddleware, aboutSecondMiddleware, aboutGetController);
-// app.post('/about/test', aboutTestPostController);
-app.post('/about/*', aboutTestPostController);
-app.post('/about/*', homeController);
-app.post('/about/:id/test', aboutTestPostController);
+app.post('/about/test', aboutTestPostController);
 
 console.dir(app.routes, { depth: null });
 

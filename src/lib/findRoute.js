@@ -1,5 +1,7 @@
 const findRoute = (route, segments, method) => {
   const [segment, ...restSegments] = segments;
+  // console.log(segment, route);
+
   if (!segment) {
     return route.handlers.has(method) ? route : null;
   }
@@ -13,8 +15,15 @@ const findRoute = (route, segments, method) => {
     if (dynamicChild && isLast)
       return findRoute(wildcardRoute, restSegments, method);
 
-    if (dynamicChild)
-      return findRoute(dynamicChild, restSegments, method);
+    if (dynamicChild) {
+      const dynamicRoute = findRoute(dynamicChild, restSegments, method);
+      dynamicRoute.urlData = {
+        ...dynamicRoute.urlData,
+        [dynamicChild.path.slice(1)]: segment
+      };
+
+      return dynamicRoute;
+    }
 
     if (wildcardRoute)
       return findRoute(wildcardRoute, restSegments, method);

@@ -4,6 +4,9 @@ export class Route {
     this.children = [];
     this.options = options;
     this.path = path;
+    if (path.startsWith(":")) {
+      this.options.isDynamic = true;
+    }
   }
 
   isParent(path) {
@@ -25,7 +28,9 @@ export class Route {
     return child;
   }
 
-  process(request, method) {
+  process(request, method, route) {
+    request.urlData = route?.urlData;
+
     const middlewaresAndControllers = this.handlers.get(method);
     console.log(middlewaresAndControllers);
 
