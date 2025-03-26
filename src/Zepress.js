@@ -11,7 +11,8 @@ class ZepressServer {
   routesHandler(request) {
     const { method, url } = request;
     const { pathname } = new URL(url);
-    const segments = pathname.split('/').filter(Boolean);
+    const segments = pathname === "/" ? pathname : pathname.split('/').filter(Boolean);
+
     const matchedRoute = findRoute(this.routeTree, segments, method);
 
     if (!matchedRoute)
@@ -21,7 +22,7 @@ class ZepressServer {
   }
 
   registerRequest(method, path, ...controllers) {
-    const segments = path.split('/').filter(Boolean);
+    const segments = path === "/" ? [path] : path.split('/').filter(Boolean);
 
     this.routeTree = buildRouteTree(this.routeTree, segments, controllers, method);
   }

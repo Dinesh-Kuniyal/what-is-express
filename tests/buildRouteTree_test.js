@@ -7,9 +7,10 @@ Deno.test("buildRouteTree should correctly build a route tree", () => {
   const fn2 = () => console.log("Second function");
 
   const baseRoute = new Route("/");
-  const url = "/api/something";
+  const url = "/api/something".split('/').filter(Boolean);
 
-  const updatedRoute = buildRouteTree(baseRoute, url.split("/").filter(Boolean), [fn1, fn2]);
+  const updatedRoute = buildRouteTree(baseRoute, url, [fn1, fn2]);
+
 
   const apiRoute = updatedRoute.findChild("api");
   const somethingRoute = apiRoute.findChild("something");
@@ -25,8 +26,9 @@ Deno.test("buildRouteTree should handle empty URL segments", () => {
   const baseRoute = new Route("/");
   const url = "/";
 
-  const updatedRoute = buildRouteTree(baseRoute, url.split("/").filter(Boolean), []);
-  assertFalse(updatedRoute.children.length !== 0);
+  const updatedRoute = buildRouteTree(baseRoute, url, [prompt]);
+
+  assertEquals(updatedRoute.children.length, 1);
 });
 
 Deno.test("buildRouteTree should handle deeply nested routes", () => {
