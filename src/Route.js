@@ -32,7 +32,6 @@ export class Route {
     request.urlData = route?.urlData;
 
     const middlewaresAndControllers = this.handlers.get(method);
-    console.log(middlewaresAndControllers);
 
     let index = 0;
 

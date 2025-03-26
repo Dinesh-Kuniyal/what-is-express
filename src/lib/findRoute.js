@@ -11,13 +11,13 @@ const findRoute = (route, segments, method) => {
     const dynamicChild = route.dynamicChild();
     const wildcardRoute = route.findChild('*');
 
-    if (dynamicChild && isLast)
+    if (wildcardRoute && isLast)
       return findRoute(wildcardRoute, restSegments, method);
 
     if (dynamicChild) {
       const dynamicRoute = findRoute(dynamicChild, restSegments, method);
       dynamicRoute.urlData = {
-        ...dynamicRoute.urlData,
+        ...dynamicRoute?.urlData,
         [dynamicChild.path.slice(1)]: segment
       };
 

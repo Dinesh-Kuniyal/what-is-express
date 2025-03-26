@@ -26,4 +26,16 @@ app.get('/', homeController);
 app.get('/about', aboutMiddleware, aboutSecondMiddleware, aboutGetController);
 app.post('/about/test', aboutTestPostController);
 
+app.post('/about/*', () => {
+  return new Response('test');
+});
+
+app.get('/demo/:userId/:id', (request) => {
+  console.log(request.urlData.userId);
+  
+  return new Response('test');
+});
+
+console.dir(app.routes, { depth: null });
+
 app.start();
