@@ -22,7 +22,9 @@ const aboutSecondMiddleware = (_, next) => {
 
 app.get('/', homeController);
 app.get('/about', aboutMiddleware, aboutSecondMiddleware, aboutGetController);
-app.post('/about/test', aboutTestPostController);
+// app.post('/about/test', aboutTestPostController);
+app.post('/about/*', aboutTestPostController);
+app.post('/about/*/demo', homeController);
 
 console.dir(app.routes, { depth: null });
 
