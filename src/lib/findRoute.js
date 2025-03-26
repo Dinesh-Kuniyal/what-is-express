@@ -5,13 +5,19 @@ const findRoute = (route, segments, method) => {
   }
 
   const isParent = route.isParent(segment);
+  const isLast = restSegments.length === 0;
   if (!isParent) {
-    const isWildCard = route.isParent('*');
-    if (isWildCard) {
-      const wildcardRoute = route.findChild('*');
+    const dynamicChild = route.dynamicChild();
+    const wildcardRoute = route.findChild('*');
 
+    if (dynamicChild && isLast)
       return findRoute(wildcardRoute, restSegments, method);
-    };
+
+    if (dynamicChild)
+      return findRoute(dynamicChild, restSegments, method);
+
+    if (wildcardRoute)
+      return findRoute(wildcardRoute, restSegments, method);
 
     return null;
   };

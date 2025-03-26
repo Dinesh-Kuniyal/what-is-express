@@ -14,6 +14,10 @@ export class Route {
     return this.children.find(child => child.path === path);
   }
 
+  dynamicChild() {
+    return this.children.find(({ path }) => path.startsWith(':'));
+  }
+
   createChild(path, handlers, options) {
     const child = new Route(path, handlers, options);
     this.children.push(child);
@@ -21,7 +25,7 @@ export class Route {
     return child;
   }
 
-  process(request, method) {    
+  process(request, method) {
     const middlewaresAndControllers = this.handlers.get(method);
     console.log(middlewaresAndControllers);
 
