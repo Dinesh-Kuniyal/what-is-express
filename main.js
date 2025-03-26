@@ -26,6 +26,4 @@ app.get('/', homeController);
 app.get('/about', aboutMiddleware, aboutSecondMiddleware, aboutGetController);
 app.post('/about/test', aboutTestPostController);
 
-console.dir(app.routes, { depth: null });
-
 app.start();

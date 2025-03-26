@@ -1,6 +1,5 @@
 const findRoute = (route, segments, method) => {
   const [segment, ...restSegments] = segments;
-  // console.log(segment, route);
 
   if (!segment) {
     return route.handlers.has(method) ? route : null;
